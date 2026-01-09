@@ -2,8 +2,24 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Fish Fry Cashier</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="icons/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png">
+
+    <!-- PWA / iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Fish Fry">
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+
+    <!-- Android PWA -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2c5aa0">
+
     <style>
         * {
             box-sizing: border-box;
@@ -387,6 +403,13 @@
 
             .order-list {
                 max-height: 80px;
+            }
+        }
+
+        /* Safari safe area support */
+        @supports (padding-bottom: env(safe-area-inset-bottom)) {
+            .reset-btn {
+                padding-bottom: calc(18px + env(safe-area-inset-bottom));
             }
         }
     </style>

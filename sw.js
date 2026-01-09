@@ -1,7 +1,12 @@
-const CACHE_NAME = 'fishfry-cashier-v1';
+const CACHE_NAME = 'fishfry-cashier-v2';
 const ASSETS = [
     './',
-    './index.html'
+    './index.html',
+    './manifest.json',
+    './icons/favicon.ico',
+    './icons/apple-touch-icon.png',
+    './icons/android-chrome-192x192.png',
+    './icons/android-chrome-512x512.png'
 ];
 
 // Install: cache the app
