@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Fish Fry Cashier</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: 18px;
+            background: #f5f5f5;
+            color: #1a1a1a;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+            height: 100dvh;
+        }
+
+        /* Menu Section (Left) */
+        .menu-section {
+            flex: 1;
+            padding: 12px;
+            background: #e8e8e8;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        .menu-header {
+            font-size: 24px;
+            font-weight: 700;
+            text-align: center;
+            padding: 8px;
+            margin-bottom: 12px;
+            background: #2c5aa0;
+            color: white;
+            border-radius: 8px;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .menu-btn {
+            background: linear-gradient(145deg, #ffffff, #e6e6e6);
+            border: 2px solid #ccc;
+            border-radius: 12px;
+            padding: 16px 8px;
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a1a;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            box-shadow: 4px 4px 8px rgba(0,0,0,0.15), -2px -2px 6px rgba(255,255,255,0.7);
+            transition: all 0.1s ease;
+            min-height: 90px;
+            user-select: none;
+        }
+
+        .menu-btn:active {
+            transform: scale(0.96);
+            box-shadow: 2px 2px 4px rgba(0,0,0,0.15), -1px -1px 3px rgba(255,255,255,0.7);
+            background: linear-gradient(145deg, #e6e6e6, #ffffff);
+        }
+
+        .menu-btn .item-name {
+            margin-bottom: 6px;
+            line-height: 1.2;
+        }
+
+        .menu-btn .item-price {
+            font-size: 22px;
+            font-weight: 700;
+            color: #2c5aa0;
+        }
+
+        /* Receipt Section (Right) */
+        .receipt-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #fff;
+            border-left: 3px solid #2c5aa0;
+            min-width: 0;
+        }
+
+        .receipt-header {
+            font-size: 24px;
+            font-weight: 700;
+            text-align: center;
+            padding: 12px;
+            background: #2c5aa0;
+            color: white;
+        }
+
+        .order-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px;
+            background: #fafafa;
+            min-height: 100px;
+        }
+
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            margin-bottom: 6px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.1s ease;
+            box-shadow: 2px 2px 4px rgba(0,0,0,0.08);
+        }
+
+        .order-item:active {
+            background: #ffebee;
+            border-color: #e57373;
+        }
+
+        .order-item::after {
+            content: '✕';
+            color: #999;
+            font-size: 16px;
+            margin-left: 8px;
+        }
+
+        .order-item:active::after {
+            color: #d32f2f;
+        }
+
+        .empty-order {
+            text-align: center;
+            color: #999;
+            padding: 24px;
+            font-style: italic;
+        }
+
+        /* Totals Area */
+        .totals-area {
+            padding: 12px;
+            background: #fff;
+            border-top: 2px solid #eee;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 28px;
+            font-weight: 700;
+            padding: 8px 12px;
+            background: #2c5aa0;
+            color: white;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        /* Payment Section */
+        .payment-section {
+            padding: 12px;
+            background: #f0f0f0;
+            border-top: 2px solid #ddd;
+        }
+
+        .payment-label {
+            font-size: 16px;
+            font-weight: 600;
+            color: #666;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .quick-pay-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .quick-pay-btn {
+            background: linear-gradient(145deg, #4caf50, #43a047);
+            border: none;
+            border-radius: 10px;
+            padding: 14px 8px;
+            font-size: 20px;
+            font-weight: 700;
+            color: white;
+            cursor: pointer;
+            box-shadow: 3px 3px 6px rgba(0,0,0,0.2);
+            transition: all 0.1s ease;
+            user-select: none;
+        }
+
+        .quick-pay-btn:active {
+            transform: scale(0.96);
+            box-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+        }
+
+        .quick-pay-btn.exact {
+            background: linear-gradient(145deg, #2196f3, #1e88e5);
+        }
+
+        .custom-pay {
+            display: flex;
+            gap: 8px;
+        }
+
+        .custom-input {
+            flex: 1;
+            padding: 12px;
+            font-size: 20px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .custom-input:focus {
+            outline: none;
+            border-color: #2c5aa0;
+        }
+
+        .custom-pay-btn {
+            background: linear-gradient(145deg, #ff9800, #f57c00);
+            border: none;
+            border-radius: 8px;
+            padding: 12px 20px;
+            font-size: 18px;
+            font-weight: 700;
+            color: white;
+            cursor: pointer;
+            box-shadow: 3px 3px 6px rgba(0,0,0,0.2);
+        }
+
+        .custom-pay-btn:active {
+            transform: scale(0.96);
+        }
+
+        /* Change Due Display */
+        .change-section {
+            padding: 16px;
+            background: #1b5e20;
+            text-align: center;
+            display: none;
+        }
+
+        .change-section.visible {
+            display: block;
+        }
+
+        .change-label {
+            font-size: 20px;
+            color: #a5d6a7;
+            margin-bottom: 4px;
+        }
+
+        .change-amount {
+            font-size: 56px;
+            font-weight: 700;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .paid-info {
+            font-size: 16px;
+            color: #a5d6a7;
+            margin-top: 4px;
+        }
+
+        /* Reset Button */
+        .reset-btn {
+            width: 100%;
+            padding: 18px;
+            font-size: 22px;
+            font-weight: 700;
+            background: linear-gradient(145deg, #d32f2f, #c62828);
+            color: white;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.25);
+            transition: all 0.1s ease;
+            user-select: none;
+        }
+
+        .reset-btn:active {
+            transform: scale(0.98);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.25);
+        }
+
+        /* Mobile Layout */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .menu-section {
+                flex: none;
+                height: 45vh;
+                border-bottom: 3px solid #2c5aa0;
+            }
+
+            .receipt-section {
+                flex: 1;
+                border-left: none;
+                height: 55vh;
+            }
+
+            .menu-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .order-list {
+                min-height: 60px;
+                max-height: 120px;
+            }
+
+            .total-row {
+                font-size: 24px;
+            }
+
+            .change-amount {
+                font-size: 48px;
+            }
+
+            .quick-pay-btn {
+                padding: 12px 6px;
+                font-size: 18px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .menu-btn {
+                padding: 12px 6px;
+                font-size: 16px;
+                min-height: 75px;
+            }
+
+            .menu-btn .item-price {
+                font-size: 18px;
+            }
+        }
+
+        /* Landscape phone optimization */
+        @media (max-height: 500px) and (orientation: landscape) {
+            .menu-section {
+                height: auto;
+                flex: 1;
+            }
+
+            .receipt-section {
+                height: auto;
+                flex: 1;
+            }
+
+            .container {
+                flex-direction: row;
+            }
+
+            .menu-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .order-list {
+                max-height: 80px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Menu Section -->
+        <section class="menu-section">
+            <div class="menu-header">🐟 Fish Fry Menu</div>
+            <div class="menu-grid" id="menuGrid"></div>
+        </section>
+
+        <!-- Receipt Section -->
+        <section class="receipt-section">
+            <div class="receipt-header">Current Order</div>
+            
+            <div class="order-list" id="orderList">
+                <div class="empty-order">Tap items to add</div>
+            </div>
+
+            <div class="totals-area">
+                <div class="total-row">
+                    <span>TOTAL:</span>
+                    <span id="totalAmount">$0.00</span>
+                </div>
+            </div>
+
+            <div class="payment-section" id="paymentSection">
+                <div class="payment-label">SELECT PAYMENT</div>
+                <div class="quick-pay-grid" id="quickPayGrid"></div>
+                <div class="custom-pay">
+                    <input type="number" class="custom-input" id="customAmount" placeholder="Custom $" inputmode="decimal" step="0.01">
+                    <button class="custom-pay-btn" onclick="processCustomPayment()">PAY</button>
+                </div>
+            </div>
+
+            <div class="change-section" id="changeSection">
+                <div class="change-label">CHANGE DUE</div>
+                <div class="change-amount" id="changeAmount">$0.00</div>
+                <div class="paid-info" id="paidInfo"></div>
+            </div>
+
+            <button class="reset-btn" onclick="resetOrder()">🔄 NEXT ORDER / RESET</button>
+        </section>
+    </div>
+
+    <script>
+        // ============================================
+        // MENU ITEMS - EDIT PRICES AND ITEMS HERE!
+        // ============================================
+        const menuItems = [
+            { name: "2 Pc. Fish Dinner", price: 16 },
+            { name: "Shrimp Dinner", price: 15 },
+            { name: "1 Pc. Fish, 3 Pc. Shrimp", price: 17 },
+            { name: "1 Pc. Fish", price: 6 },
+            { name: "Dessert", price: 1 }
+        ];
+        // ============================================
+
+        // State
+        let order = [];
+        let total = 0;
+        let paymentProcessed = false;
+
+        // DOM Elements
+        const menuGrid = document.getElementById('menuGrid');
+        const orderList = document.getElementById('orderList');
+        const totalAmount = document.getElementById('totalAmount');
+        const quickPayGrid = document.getElementById('quickPayGrid');
+        const paymentSection = document.getElementById('paymentSection');
+        const changeSection = document.getElementById('changeSection');
+        const changeAmount = document.getElementById('changeAmount');
+        const paidInfo = document.getElementById('paidInfo');
+        const customInput = document.getElementById('customAmount');
+
+        // Initialize menu buttons
+        function initMenu() {
+            menuGrid.innerHTML = '';
+            menuItems.forEach((item, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'menu-btn';
+                btn.innerHTML = `
+                    <span class="item-name">${item.name}</span>
+                    <span class="item-price">$${item.price}</span>
+                `;
+                btn.onclick = () => addItem(index);
+                menuGrid.appendChild(btn);
+            });
+        }
+
+        // Add item to order
+        function addItem(index) {
+            if (paymentProcessed) return; // Lock order after payment
+
+            const item = menuItems[index];
+            order.push({ ...item, id: Date.now() + Math.random() });
+            updateOrder();
+        }
+
+        // Remove item from order
+        function removeItem(id) {
+            if (paymentProcessed) return; // Lock order after payment
+
+            order = order.filter(item => item.id !== id);
+            updateOrder();
+        }
+
+        // Update order display
+        function updateOrder() {
+            // Calculate total
+            total = order.reduce((sum, item) => sum + item.price, 0);
+            totalAmount.textContent = `$${total.toFixed(2)}`;
+
+            // Update order list
+            if (order.length === 0) {
+                orderList.innerHTML = '<div class="empty-order">Tap items to add</div>';
+            } else {
+                orderList.innerHTML = '';
+                order.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'order-item';
+                    div.innerHTML = `<span>${item.name}</span><span>$${item.price.toFixed(2)}</span>`;
+                    div.onclick = () => removeItem(item.id);
+                    orderList.appendChild(div);
+                });
+                // Scroll to bottom
+                orderList.scrollTop = orderList.scrollHeight;
+            }
+
+            // Update quick pay buttons
+            updateQuickPay();
+        }
+
+        // Update quick pay buttons based on total
+        function updateQuickPay() {
+            quickPayGrid.innerHTML = '';
+
+            if (total === 0) {
+                quickPayGrid.innerHTML = '<div style="grid-column: span 2; text-align: center; color: #999; padding: 10px;">Add items first</div>';
+                return;
+            }
+
+            const amounts = new Set();
+            
+            // Exact amount
+            amounts.add(total);
+
+            // Next multiple of 5
+            const next5 = Math.ceil(total / 5) * 5;
+            if (next5 > total) amounts.add(next5);
+
+            // Next multiple of 10
+            const next10 = Math.ceil(total / 10) * 10;
+            if (next10 > total) amounts.add(next10);
+
+            // Next multiple of 20
+            const next20 = Math.ceil(total / 20) * 20;
+            if (next20 > total) amounts.add(next20);
+
+            // Sort and create buttons
+            const sortedAmounts = Array.from(amounts).sort((a, b) => a - b);
+            
+            sortedAmounts.forEach(amount => {
+                const btn = document.createElement('button');
+                btn.className = 'quick-pay-btn' + (amount === total ? ' exact' : '');
+                
+                if (amount === total) {
+                    btn.textContent = `$${amount} (Exact)`;
+                } else {
+                    btn.textContent = `$${amount}`;
+                }
+                
+                btn.onclick = () => processPayment(amount);
+                quickPayGrid.appendChild(btn);
+            });
+        }
+
+        // Process payment
+        function processPayment(amount) {
+            if (total === 0) return;
+
+            const change = amount - total;
+            
+            if (change < 0) {
+                alert('Payment amount is less than total!');
+                return;
+            }
+
+            paymentProcessed = true;
+            
+            // Show change
+            changeAmount.textContent = `$${change.toFixed(2)}`;
+            paidInfo.textContent = `Paid: $${amount.toFixed(2)} | Total: $${total.toFixed(2)}`;
+            changeSection.classList.add('visible');
+            paymentSection.style.display = 'none';
+
+            // Visual feedback
+            document.querySelectorAll('.menu-btn').forEach(btn => {
+                btn.style.opacity = '0.5';
+                btn.style.pointerEvents = 'none';
+            });
+        }
+
+        // Process custom payment
+        function processCustomPayment() {
+            const amount = parseFloat(customInput.value);
+            if (isNaN(amount) || amount <= 0) {
+                alert('Please enter a valid payment amount');
+                return;
+            }
+            processPayment(amount);
+        }
+
+        // Reset for next order
+        function resetOrder() {
+            order = [];
+            total = 0;
+            paymentProcessed = false;
+            customInput.value = '';
+            
+            changeSection.classList.remove('visible');
+            paymentSection.style.display = 'block';
+
+            // Re-enable menu buttons
+            document.querySelectorAll('.menu-btn').forEach(btn => {
+                btn.style.opacity = '1';
+                btn.style.pointerEvents = 'auto';
+            });
+
+            updateOrder();
+        }
+
+        // Handle Enter key on custom input
+        customInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                processCustomPayment();
+            }
+        });
+
+        // Prevent zoom on double-tap (iOS)
+        document.addEventListener('dblclick', (e) => {
+            e.preventDefault();
+        }, { passive: false });
+
+        // Initialize
+        initMenu();
+        updateOrder();
+
+        // Register service worker for offline support
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+                .then(() => console.log('Service worker registered'))
+                .catch(err => console.log('Service worker registration failed:', err));
+        }
+    </script>
+</body>
+</html>
