@@ -1,4 +1,4 @@
-const CACHE_NAME = 'fishfry-cashier-v2';
+const CACHE_NAME = 'fishfry-cashier-v3';
 const ASSETS = [
     './',
     './index.html',
