@@ -153,6 +153,8 @@
             cursor: pointer;
             transition: all 0.1s ease;
             box-shadow: 2px 2px 4px rgba(0,0,0,0.08);
+            -webkit-user-select: none;
+            user-select: none;
         }
 
         .order-item:active {
@@ -277,6 +279,8 @@
             color: white;
             cursor: pointer;
             box-shadow: 3px 3px 6px rgba(0,0,0,0.2);
+            -webkit-user-select: none;
+            user-select: none;
         }
 
         .custom-pay-btn:active {
@@ -469,10 +473,14 @@
         // MENU ITEMS - EDIT PRICES AND ITEMS HERE!
         // ============================================
         const menuItems = [
-            { name: "2 Pc. Fish Dinner", price: 16 },
-            { name: "Shrimp Dinner", price: 15 },
-            { name: "1 Pc. Fish, 3 Pc. Shrimp", price: 17 },
-            { name: "1 Pc. Fish", price: 6 },
+            { name: "2 Pc. Cod Dinner", price: 16 },
+            { name: "1 Pc. Cod Dinner", price: 12 },
+            { name: "Combo Dinner: 1 Pc. Cod, 3 Shrimp", price: 17 },
+            { name: "6 Pc Shrimp Dinner", price: 15 },
+            { name: "Mac n Cheese Dinner( No Potato)", price: 7 },
+            { name: "1 Pc. Cod", price: 6 },
+            { name: "Side Potato", price: 4 },
+            { name: "Side ColeSlaw", price: 2 },
             { name: "Dessert", price: 1 }
         ];
         // ============================================
@@ -661,6 +669,9 @@
         document.addEventListener('dblclick', (e) => {
             e.preventDefault();
         }, { passive: false });
+
+        // Enable :active styles on iOS Safari
+        document.body.addEventListener('touchstart', function() {}, {passive: true});
 
         // Initialize
         initMenu();
